@@ -53,6 +53,11 @@ class Attendance(db.Model):
 with app.app_context():
     db.create_all()
 
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
