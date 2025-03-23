@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}出欠確認{% endblock %}
+
+{% block content %}
+<h2>出欠確認</h2>
+
+<!-- フラッシュメッセージ -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-success">
+      {% for msg in messages %}
+        <div>{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- 出力ボタン -->
+{% if selected_date and selected_event %}
+  <a href="{{ url_for('export_attendance_csv', date=selected_date, event=selected_event, team=request.args.getlist('team')) }}" class="btn btn-success mb-3">
+    📥 CSV出力
+  </a>
+  <a href="{{ url_for('export_attendance_pdf', date=selected_date, event=selected_event, team=request.args.getlist('team')) }}" class="btn btn-danger mb-3">
+    🖨 PDF出力
+  </a>
+{% endif %}
+
+<!-- フィルターフォーム -->
+<form method="GET" class="mb-4" id="filterForm">
+  <div class="row g-2 align-items-end">
+    
+    <!-- チーム名 -->
+    <div class="col-md-2">
+      <label>チーム名</label>
+      <select name="team" class="form-select" multiple onchange="document.getElementById('filterForm').submit()" style="min-width: 160px;">
+        {% for t in teams %}
+          <option value="{{ t }}" {% if t in selected_teams %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- 日付とイベント名（縦並び） -->
+    <div class="col-md-2">
+      <div class="mb-2">
+        <label>日付</label>
+        <select name="date" class="form-select" onchange="document.getElementById('filterForm').submit()">
+          <option value="">選択してください</option>
+          {% for d, e in events %}
+            <option value="{{ d }}" {% if d == selected_date %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>イベント名</label>
+        <select name="event" class="form-select" onchange="document.getElementById('filterForm').submit()">
+          <option value="">選択してください</option>
+          {% for d, e in events %}
+            {% if d == selected_date %}
+              <option value="{{ e }}" {% if e == selected_event %}selected{% endif %}>{{ e }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <!-- 出身校 -->
+    <div class="col-md-2">
+      <label>出身校</label>
+      <select name="school" class="form-select" multiple>
+        {% for s in schools %}
+          <option value="{{ s[0] }}" {% if s[0] in request.args.getlist('school') %}selected{% endif %}>{{ s[0] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- 学年 -->
+    <div class="col-md-2">
+      <label>学年</label>
+      <select name="grade" class="form-select" multiple>
+        {% for g in grades %}
+          <option value="{{ g[0] }}" {% if g[0]|string in request.args.getlist('grade') %}selected{% endif %}>{{ g[0] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- 性別 -->
+    <div class="col-md-2">
+      <label>性別</label>
+      <select name="gender" class="form-select" multiple>
+        {% for gender in genders %}
+          <option value="{{ gender[0] }}" {% if gender[0] in request.args.getlist('gender') %}selected{% endif %}>{{ gender[0] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+  </div>
+  <button type="submit" class="btn btn-primary mt-3">表示</button>
+</form>
+
+
+<!-- 出欠入力テーブル -->
+{% if records %}
+<form method="POST">
+  <table class="table table-bordered align-middle">
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th>学年</th>
+        <th>性別</th>
+        <th>出身校</th>
+        <th>出席</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in records %}
+        <tr>
+          <td>{{ record.profile.name }}</td>
+          <td>{{ record.profile.grade }}</td>
+          <td>{{ record.profile.gender }}</td>
+          <td>{{ record.profile.school }}</td>
+          <td>
+            <select name="status_{{ record.profile.id }}" class="form-select">
+              <option value="">---</option>
+              <option value="出席" {% if record.status == "出席" %}selected{% endif %}>出席</option>
+              <option value="欠席" {% if record.status == "欠席" %}selected{% endif %}>欠席</option>
+              <option value="遅刻" {% if record.status == "遅刻" %}selected{% endif %}>遅刻</option>
+              <option value="早退" {% if record.status == "早退" %}selected{% endif %}>早退</option>
+            </select>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-success">保存</button>
+</form>
+{% else %}
+  <p class="text-muted">データがありません。</p>
+{% endif %}
+
+{% endblock %}

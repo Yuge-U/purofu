@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}メッセージ編集{% endblock %}
+{% block content %}
+<h1>メッセージ編集</h1>
+
+<form method="POST">
+    <input type="text" name="name" class="form-control mb-2" value="{{ message.name }}" required>
+    <textarea name="content" class="form-control mb-2" required>{{ message.content }}</textarea>
+    <button type="submit" class="btn btn-primary">更新</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">キャンセル</a>
+</form>
+{% endblock %}

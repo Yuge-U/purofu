@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}出欠入力{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">出欠入力</h2>
+
+<!-- フラッシュメッセージがあれば表示 -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-success">
+      {% for msg in messages %}
+        <div>{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- チーム名フィルター -->
+<form method="GET" id="filterForm" class="mb-3">
+  <label>チーム名で絞り込み</label>
+  <select name="team" class="form-select" multiple onchange="document.getElementById('filterForm').submit()">
+    {% for t in teams %}
+      <option value="{{ t }}" {% if t in selected_teams %}selected{% endif %}>{{ t }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<!-- 出欠入力フォーム -->
+<form method="POST">
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label>日付</label>
+      <input type="date" name="date" class="form-control" required>
+    </div>
+    <div class="col-md-4">
+      <label>イベント名</label>
+      <input type="text" name="event" class="form-control" placeholder="例：練習" required>
+    </div>
+  </div>
+
+  {% if profiles %}
+  <table class="table table-bordered align-middle">
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th>学年</th>
+        <th>性別</th>
+        <th>出身校</th>
+        <th>チーム名</th>
+        <th>出欠</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in profiles %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.grade }}</td>
+        <td>{{ p.gender }}</td>
+        <td>{{ p.school }}</td>
+        <td>{{ p.team }}</td>
+        <td>
+          <select name="status_{{ p.id }}" class="form-select">
+            <option value="">---</option>
+            <option value="出席">出席</option>
+            <option value="欠席">欠席</option>
+            <option value="遅刻">遅刻</option>
+            <option value="早退">早退</option>
+          </select>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="btn btn-success">出欠を登録</button>
+  {% else %}
+    <p class="text-muted">該当するプロフィールがありません。</p>
+  {% endif %}
+</form>
+
+{% endblock %}

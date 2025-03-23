@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}イベントの作成{% endblock %}
+
+{% block content %}
+<h2>イベントの作成</h2>
+
+<!-- エラーメッセージ -->
+{% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<!-- 🔹 チームフィルター -->
+<form method="GET" id="teamFilterForm" class="mb-4">
+  <div class="col-md-4">
+    <label>チーム名で絞り込み</label>
+    <select name="team" class="form-select" multiple onchange="document.getElementById('teamFilterForm').submit()">
+      {% for t in teams %}
+        <option value="{{ t }}" {% if t in selected_teams %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<!-- 🔹 イベント登録フォーム -->
+<form method="POST">
+  <div class="mb-3">
+    <label>日付</label>
+    <input type="date" name="date" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label>イベント名（既存から選ぶ）</label>
+    <select id="event_select" class="form-select mb-2" onchange="document.getElementById('event_input').value = this.value">
+      <option value="">選択してください</option>
+      {% for e in existing_events %}
+        <option value="{{ e }}">{{ e }}</option>
+      {% endfor %}
+    </select>
+
+    <label>または新しいイベント名を入力</label>
+    <input type="text" id="event_input" name="event" class="form-control" placeholder="例：通常練習、試合" required>
+  </div>
+
+  <!-- 🔹 対象プロフィール一覧 -->
+  <div class="mb-3">
+    <label>対象プロフィール（{{ profiles|length }}名）</label>
+    <ul class="list-group">
+      {% for profile in profiles %}
+        <li class="list-group-item">
+          {{ profile.name }}（{{ profile.team or "無所属" }} / {{ profile.grade }}年）
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <button type="submit" class="btn btn-primary">イベント作成</button>
+  <a href="{{ url_for('view_attendance') }}" class="btn btn-outline-secondary">出欠確認へ戻る</a>
+</form>
+{% endblock %}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ date }} - {{ event }} 出欠一覧</title>
+    <style>
+        body {
+            font-family: "Arial", "Noto Sans JP", sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>出欠一覧 - {{ date }} / {{ event }}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>チーム名</th>
+                <th>名前</th>
+                <th>学年</th>
+                <th>性別</th>
+                <th>出身校</th>
+                <th>出欠</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile, attendance in records %}
+            <tr>
+                <td>{{ profile.team }}</td>
+                <td>{{ profile.name }}</td>
+                <td>{{ profile.grade }}</td>
+                <td>{{ profile.gender }}</td>
+                <td>{{ profile.school }}</td>
+                <td>{{ attendance.status or "未入力" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

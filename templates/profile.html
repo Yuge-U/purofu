@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}プロフィール一覧{% endblock %}
+{% block content %}
+
+
+<hr>
+
+<h2>プロフ検索</h2>
+<form method="GET" class="mb-4">
+  <div class="row g-3">
+    <!-- 名前 -->
+    <div class="col-md-2">
+      <label>名前</label>
+      <input type="text" name="keyword" value="{{ keyword }}" class="form-control" placeholder="例：山田太郎">
+    </div>
+ 
+    <!-- 背番号（左） -->
+    <div class="col-md-2">
+      <label>背番号</label>
+      <input type="number" name="number" value="{{ request.args.get('number') }}" class="form-control" placeholder="例：10">
+    </div>
+  
+    <!-- 性別 -->
+    <div class="col-md-2">
+      <label>性別</label>
+      <select name="gender" class="form-select" multiple>
+        {% for g in genders %}
+          <option value="{{ g }}" {% if g in selected_genders %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  
+    <!-- 出身校 -->
+    <div class="col-md-2">
+      <label>出身校</label>
+      <select name="school" class="form-select" multiple>
+        {% for s in schools %}
+          <option value="{{ s }}" {% if s in selected_schools %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- 学年 -->
+    <div class="col-md-2">
+      <label>学年</label>
+      <select name="grade" class="form-select" multiple>
+        {% for g in grades %}
+          <option value="{{ g }}" {% if g|string in selected_grades %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- ステータス -->
+    <div class="col-md-2">
+      <label>ステータス</label>
+      <select name="status" class="form-select" multiple>
+        <option value="在籍" {% if "在籍" in selected_status or not selected_status %}selected{% endif %}>在籍</option>
+        <option value="退団" {% if "退団" in selected_status %}selected{% endif %}>退団</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- チーム名 + 並び替え -->
+  <div class="row g-3 mt-3 align-items-end">
+    <!-- チーム名 -->
+    <div class="col-md-3">
+      <label>チーム名</label>
+      <select name="team" class="form-select" multiple>
+        {% for t in teams %}
+          <option value="{{ t }}" {% if t in request.args.getlist('team') %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- 並び替え -->
+    <div class="col-md-4">
+      <label>並び替え</label><br>
+      <div class="btn-group">
+        <a href="{{ url_for('profile', keyword=keyword, sort='new') }}" class="btn btn-outline-primary {% if sort == 'new' %}active{% endif %}">新着順</a>
+        <a href="{{ url_for('profile', keyword=keyword, sort='name_asc') }}" class="btn btn-outline-primary {% if sort == 'name_asc' %}active{% endif %}">名前 A→Z</a>
+        <a href="{{ url_for('profile', keyword=keyword, sort='name_desc') }}" class="btn btn-outline-primary {% if sort == 'name_desc' %}active{% endif %}">名前 Z→A</a>
+        <a href="{{ url_for('profile', keyword=keyword, sort='grade') }}" class="btn btn-outline-primary {% if sort == 'grade' %}active{% endif %}">学年順</a>
+      </div>
+    </div>
+
+    <!-- 検索ボタン -->
+    <div class="col-md-2 text-end">
+      <button type="submit" class="btn btn-primary">検索</button>
+    </div>
+  </div>
+</form>
+
+
+
+
+<h2>プロフィール一覧</h2>
+<div class="row">
+    {% for p in profiles %}
+    <div class="col-md-4">
+        <div class="card mb-4">
+            {% if p.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + p.image_filename) }}" class="card-img-top" style="object-fit: cover; height: 200px;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ p.name }}</h5>
+                <p class="card-text">
+                    チーム：{{ p.team }}<br>
+                    背番号：{{ p.number }}<br>
+                    性別：{{ p.gender }}<br>
+                    出身校：{{ p.school }}<br>
+                    学年：{{ p.grade }}年生
+                    ステータス：{{ p.status }}<br>
+                    備考：{{ p.notes }}
+                </p>
+                <a href="{{ url_for('edit_profile', id=p.id) }}" class="btn btn-sm btn-warning">編集</a>
+                <a href="{{ url_for('delete_profile', id=p.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('削除しますか？')">削除</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

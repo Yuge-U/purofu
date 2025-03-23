@@ -1,0 +1,9 @@
+<!-- templates/profile_login.html -->
+<h2>プロフ一覧＆編集にはパスワードが必要です</h2>
+<form method="POST">
+  <input type="password" name="password" placeholder="パスワード" class="form-control" required>
+  <button type="submit" class="btn btn-primary mt-2">ログイン</button>
+  {% if error %}
+    <p class="text-danger mt-2">{{ error }}</p>
+  {% endif %}
+</form>

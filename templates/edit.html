@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}プロフィール編集{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">プロフィール編集</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+  <!-- 🔸 既存チーム選択 or 新規入力 -->
+<!-- チーム名 -->
+<div class="row mb-3">
+    <div class="col-md-6">
+      <label class="form-label">チーム名を選択</label>
+      <select name="team" class="form-select">
+        <option value="">-- 選択してください --</option>
+        {% for t in teams %}
+          <option value="{{ t }}" {% if profile and profile.team == t %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">新しいチーム名（任意）</label>
+      <input type="text" name="team_custom" class="form-control" placeholder="例：ONE DAY">
+    </div>
+  </div>
+  
+  <!-- 出身校 -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="form-label">出身校を選択</label>
+      <select name="school" class="form-select">
+        <option value="">-- 選択してください --</option>
+        {% for s in schools %}
+          <option value="{{ s }}" {% if profile and profile.school == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">新しい出身校（任意）</label>
+      <input type="text" name="school_custom" class="form-control" placeholder="例：〇〇中学校">
+    </div>
+  </div>
+  
+  
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label>名前：</label>
+      <input type="text" name="name" class="form-control" value="{{ profile.name }}" required>
+    </div>
+    <div class="col-md-2">
+      <label>学年：</label>
+      <input type="number" name="grade" class="form-control" value="{{ profile.grade }}">
+    </div>
+    <div class="col-md-2">
+      <label>性別：</label>
+      <select name="gender" class="form-select">
+        <option value="男性" {% if profile.gender == "男性" %}selected{% endif %}>男性</option>
+        <option value="女性" {% if profile.gender == "女性" %}selected{% endif %}>女性</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label>背番号：</label>
+      <input type="number" name="number" class="form-control" value="{{ profile.number }}">
+    </div>
+
+  <div class="mb-3">
+    <label class="form-label">ステータス：</label>
+    <select name="status" class="form-select">
+      <option value="在籍" {% if profile.status == "在籍" %}selected{% endif %}>在籍</option>
+      <option value="退団" {% if profile.status == "退団" %}selected{% endif %}>退団</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>備考：</label>
+    <textarea name="notes" class="form-control" rows="3">{{ profile.notes }}</textarea>
+  </div>
+
+  <div class="mb-3">
+    <label>顔写真：</label>
+    <input type="file" name="image" class="form-control">
+    {% if profile.image_filename %}
+      <div class="mt-3">
+        <img src="{{ url_for('static', filename='uploads/' + profile.image_filename) }}" class="img-thumbnail" style="max-height: 200px;">
+      </div>
+    {% endif %}
+  </div>
+
+  <button type="submit" class="btn btn-primary">更新</button>
+  <a href="{{ url_for('profile') }}" class="btn btn-secondary">キャンセル</a>
+</form>
+{% endblock %}

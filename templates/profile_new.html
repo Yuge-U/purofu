@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}プロフ新規登録{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">プロフ登録フォーム</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+  <!-- チーム名 -->
+<div class="row mb-3">
+  <div class="col-md-6">
+    <label class="form-label">チーム名を選択</label>
+    <select name="team" class="form-select">
+      <option value="">-- 選択してください --</option>
+      {% for t in teams %}
+        <option value="{{ t }}" {% if profile and profile.team == t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">新しいチーム名（任意）</label>
+    <input type="text" name="team_custom" class="form-control" placeholder="例：ONE DAY">
+  </div>
+</div>
+
+<!-- 出身校 -->
+<div class="row mb-3">
+  <div class="col-md-6">
+    <label class="form-label">出身校を選択</label>
+    <select name="school" class="form-select">
+      <option value="">-- 選択してください --</option>
+      {% for s in schools %}
+        <option value="{{ s }}" {% if profile and profile.school == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">新しい出身校（任意）</label>
+    <input type="text" name="school_custom" class="form-control" placeholder="例：〇〇中学校">
+  </div>
+</div>
+
+  
+
+  <!-- 以下、既存の項目たち -->
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <input type="text" name="name" class="form-control" placeholder="名前" required>
+    </div>
+    <div class="col-md-2">
+      <input type="number" name="grade" class="form-control" placeholder="学年">
+    </div>
+    <div class="col-md-3">
+      <select name="gender" class="form-select">
+        <option value="">性別</option>
+        <option value="男性">男性</option>
+        <option value="女性">女性</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="number" name="number" class="form-control" placeholder="背番号">
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">ステータス</label>
+    <select name="status" class="form-select">
+      <option value="在籍" selected>在籍</option>
+      <option value="退団">退団</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <textarea name="notes" class="form-control" rows="3" placeholder="備考"></textarea>
+  </div>
+
+  <div class="mb-3">
+    <input type="file" name="image" class="form-control">
+  </div>
+
+  <button type="submit" class="btn btn-primary">登録</button>
+</form>
+
+{% endblock %}
+

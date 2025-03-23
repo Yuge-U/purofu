@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}CSVインポート{% endblock %}
+{% block content %}
+<h2>CSVからプロフインポート</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  <div class="mb-3">
+    <input type="file" name="file" accept=".csv" class="form-control" required>
+  </div>
+  <button type="submit" class="btn btn-primary">インポート</button>
+  <a href="{{ url_for('profile') }}" class="btn btn-secondary">戻る</a>
+</form>
+
+<div class="mt-4">
+  <p>📝 CSVの列名（見出し行）は以下のようにしてください：</p>
+  <pre style="background:#f8f9fa; padding:10px; border:1px solid #ccc;">
+名前,学年,性別,背番号,出身校,チーム名,ステータス,備考,画像ファイル名
+  </pre>
+</div>
+{% endblock %}
