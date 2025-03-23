@@ -594,11 +594,6 @@ def delete_profile(id):
     db.session.commit()
     return redirect(url_for("profile"))
 
-@app.route("/")
-def index():
-    return render_template("index.html")  # ← お知らせページにしたいならこれ！
-
-
 app = Flask(__name__)
 
 if __name__ == "__main__":
