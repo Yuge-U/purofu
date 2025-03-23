@@ -594,6 +594,10 @@ def delete_profile(id):
     db.session.commit()
     return redirect(url_for("profile"))
 
+@app.route("/")
+def index():
+    return redirect(url_for('index'))  # ← お知らせページの関数名にリダイレクト
+
 app = Flask(__name__)
 
 if __name__ == "__main__":
