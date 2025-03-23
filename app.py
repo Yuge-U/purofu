@@ -596,7 +596,8 @@ def delete_profile(id):
 
 @app.route("/")
 def index():
-    return render_template("index.html")  # ← templates/index.html に飛ぶ
+    return render_template("index.html")  # ← お知らせページにしたいならこれ！
+
 
 app = Flask(__name__)
 
