@@ -14,3 +14,14 @@
 　　git add .
 　　git commit -m "背番号検索修正"
 　　git push
+
+5.画像保存策
+　　import cloudinary
+import cloudinary.uploader
+
+# Cloudinary設定
+cloudinary.config(
+    cloud_name="purofu",
+    api_key="321378518641743",
+    api_secret="wbr-PE9sGDB_KLurSKM3N9TafVQ"
+)

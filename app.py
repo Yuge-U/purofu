@@ -12,6 +12,16 @@ from flask import render_template_string, make_response
 from urllib.parse import quote
 import os
 
+import cloudinary
+import cloudinary.uploader
+
+# Cloudinary設定
+cloudinary.config(
+    cloud_name="purofu",
+    api_key="321378518641743",
+    api_secret="wbr-PE9sGDB_KLurSKM3N9TafVQ"
+)
+
 from flask import Flask
 app = Flask(__name__)
 
@@ -172,8 +182,6 @@ def profile():
 @app.route("/profile/new", methods=["GET", "POST"])
 def profile_new():
     if request.method == "POST":
-        team = request.form.get("team")
-        school = request.form.get("school")
         name = request.form["name"]
         grade = request.form.get("grade")
         gender = request.form.get("gender")
@@ -181,26 +189,35 @@ def profile_new():
         status = request.form.get("status")
         notes = request.form.get("notes")
 
-        # ✅ チーム名と出身校
+        # ✅ カスタム or 既存チーム・学校
         team = request.form.get("team_custom") or request.form.get("team")
         school = request.form.get("school_custom") or request.form.get("school")
 
+        # ✅ Cloudinaryにアップロード
         image = request.files["image"]
-        filename = None
+        image_url = None
         if image and image.filename != "":
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            result = cloudinary.uploader.upload(image)
+            image_url = result["secure_url"]
 
+        # プロフィール作成
         new_profile = Profile(
-            name=name, grade=grade, gender=gender, number=number,
-            team=team, school=school, notes=notes,
-            image_filename=filename, status=status
+            name=name,
+            grade=grade,
+            gender=gender,
+            number=number,
+            team=team,
+            school=school,
+            notes=notes,
+            image_filename=image_url,
+            status=status
         )
+
         db.session.add(new_profile)
         db.session.commit()
         return redirect(url_for("index"))
 
-    # 既存のチーム・出身校一覧
+    # フォーム用の既存データ
     teams = sorted([t[0] for t in db.session.query(Profile.team).distinct().all() if t[0]])
     schools = sorted([s[0] for s in db.session.query(Profile.school).distinct().all() if s[0]])
     return render_template("profile_new.html", teams=teams, schools=schools)
@@ -213,8 +230,6 @@ def edit_profile(id):
     profile = Profile.query.get_or_404(id)
 
     if request.method == "POST":
-        team = request.form.get("team")
-        school = request.form.get("school")
         profile.name = request.form["name"]
         profile.grade = request.form.get("grade")
         profile.gender = request.form.get("gender")
@@ -222,15 +237,15 @@ def edit_profile(id):
         profile.status = request.form.get("status")
         profile.notes = request.form.get("notes")
 
-        # ✅ チーム・出身校：新規優先
+        # ✅ チーム・出身校（新規入力が優先）
         profile.team = request.form.get("team_custom") or request.form.get("team")
         profile.school = request.form.get("school_custom") or request.form.get("school")
 
+        # ✅ Cloudinaryへ画像アップロード
         image = request.files["image"]
         if image and image.filename != "":
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            profile.image_filename = filename
+            result = cloudinary.uploader.upload(image)
+            profile.image_filename = result["secure_url"]
 
         db.session.commit()
         return redirect(url_for("profile"))
@@ -238,6 +253,7 @@ def edit_profile(id):
     teams = sorted([t[0] for t in db.session.query(Profile.team).distinct().all() if t[0]])
     schools = sorted([s[0] for s in db.session.query(Profile.school).distinct().all() if s[0]])
     return render_template("edit.html", profile=profile, teams=teams, schools=schools)
+
 
 
 @app.route("/attendance/mark", methods=["GET", "POST"])
