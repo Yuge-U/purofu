@@ -262,7 +262,7 @@ def edit_profile(id):
         db.session.commit()
 
         # 🔁 元のページに戻る
-        return redirect(request.referrer or url_for("profile"))  ← ここを変更！
+        return redirect(request.referrer or url_for("profile"))  
 
     # GET時は従来通り
     teams = sorted([t[0] for t in db.session.query(Profile.team).distinct().all() if t[0]])
