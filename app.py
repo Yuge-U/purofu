@@ -24,8 +24,8 @@ migrate = Migrate(app, db)
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    content = db.Column(db.String(200))
+    name = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
 
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -116,6 +116,15 @@ def profile():
     sort = request.args.get("sort", "new")
 
     query = Profile.query
+
+    number = request.args.get("number")
+    if number:
+        try:
+            number = int(number)
+            query = query.filter(Profile.number == number)
+        except ValueError:
+            pass  # 数字じゃない入力は無視
+
     if keyword:
         query = query.filter(Profile.name.contains(keyword))
     if school_list:
@@ -152,6 +161,7 @@ def profile():
         "profile.html",
         profiles=profiles,
         keyword=keyword,
+        number=number, 
         sort=sort,
         schools=schools,
         grades=grades,

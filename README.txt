@@ -9,3 +9,8 @@
 
 3. アプリ実行
    python app.py
+
+4.アップデート用そのあと手動デプロイ
+　　git add .
+　　git commit -m "背番号検索修正"
+　　git push
