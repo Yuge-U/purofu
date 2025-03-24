@@ -6,9 +6,8 @@
 
 <form method="POST" enctype="multipart/form-data">
 
-  <!-- 🔸 既存チーム選択 or 新規入力 -->
-<!-- チーム名 -->
-<div class="row mb-3">
+  <!-- 🔸 チーム名 -->
+  <div class="row mb-3">
     <div class="col-md-6">
       <label class="form-label">チーム名を選択</label>
       <select name="team" class="form-select">
@@ -23,8 +22,8 @@
       <input type="text" name="team_custom" class="form-control" placeholder="例：ONE DAY">
     </div>
   </div>
-  
-  <!-- 出身校 -->
+
+  <!-- 🔸 出身校 -->
   <div class="row mb-3">
     <div class="col-md-6">
       <label class="form-label">出身校を選択</label>
@@ -40,9 +39,8 @@
       <input type="text" name="school_custom" class="form-control" placeholder="例：〇〇中学校">
     </div>
   </div>
-  
-  
 
+  <!-- 🔸 基本情報 -->
   <div class="row mb-3">
     <div class="col-md-4">
       <label>名前：</label>
@@ -63,7 +61,9 @@
       <label>背番号：</label>
       <input type="number" name="number" class="form-control" value="{{ profile.number }}">
     </div>
+  </div>
 
+  <!-- 🔸 ステータス -->
   <div class="mb-3">
     <label class="form-label">ステータス：</label>
     <select name="status" class="form-select">
@@ -72,22 +72,30 @@
     </select>
   </div>
 
+  <!-- 🔸 備考 -->
   <div class="mb-3">
     <label>備考：</label>
     <textarea name="notes" class="form-control" rows="3">{{ profile.notes }}</textarea>
   </div>
 
+  <!-- 🔸 顔写真 -->
   <div class="mb-3">
     <label>顔写真：</label>
     <input type="file" name="image" class="form-control">
     {% if profile.image_filename %}
       <div class="mt-3">
-        <img src="{{ url_for('static', filename='uploads/' + profile.image_filename) }}" class="img-thumbnail" style="max-height: 200px;">
+        {% if 'res.cloudinary.com' in profile.image_filename %}
+          <img src="{{ profile.image_filename }}" class="img-thumbnail" style="max-height: 200px;">
+        {% else %}
+          <img src="{{ url_for('static', filename='uploads/' + profile.image_filename) }}" class="img-thumbnail" style="max-height: 200px;">
+        {% endif %}
       </div>
     {% endif %}
   </div>
 
+  <!-- 🔸 ボタン -->
   <button type="submit" class="btn btn-primary">更新</button>
   <a href="{{ url_for('profile') }}" class="btn btn-secondary">キャンセル</a>
+
 </form>
 {% endblock %}

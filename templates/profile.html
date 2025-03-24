@@ -2,7 +2,6 @@
 {% block title %}プロフィール一覧{% endblock %}
 {% block content %}
 
-
 <hr>
 
 <h2>プロフ検索</h2>
@@ -13,13 +12,13 @@
       <label>名前</label>
       <input type="text" name="keyword" value="{{ keyword }}" class="form-control" placeholder="例：山田太郎">
     </div>
- 
-    <!-- 背番号（左） -->
+
+    <!-- 背番号 -->
     <div class="col-md-2">
       <label>背番号</label>
       <input type="number" name="number" value="{{ request.args.get('number') }}" class="form-control" placeholder="例：10">
     </div>
-  
+
     <!-- 性別 -->
     <div class="col-md-2">
       <label>性別</label>
@@ -29,7 +28,7 @@
         {% endfor %}
       </select>
     </div>
-  
+
     <!-- 出身校 -->
     <div class="col-md-2">
       <label>出身校</label>
@@ -62,7 +61,6 @@
 
   <!-- チーム名 + 並び替え -->
   <div class="row g-3 mt-3 align-items-end">
-    <!-- チーム名 -->
     <div class="col-md-3">
       <label>チーム名</label>
       <select name="team" class="form-select" multiple>
@@ -72,7 +70,6 @@
       </select>
     </div>
 
-    <!-- 並び替え -->
     <div class="col-md-4">
       <label>並び替え</label><br>
       <div class="btn-group">
@@ -83,41 +80,44 @@
       </div>
     </div>
 
-    <!-- 検索ボタン -->
     <div class="col-md-2 text-end">
       <button type="submit" class="btn btn-primary">検索</button>
     </div>
   </div>
 </form>
 
-
-
-
 <h2>プロフィール一覧</h2>
 <div class="row">
-    {% for p in profiles %}
-    <div class="col-md-4">
-        <div class="card mb-4">
-            {% if p.image_filename %}
-            <img src="{{ url_for('static', filename='uploads/' + p.image_filename) }}" class="card-img-top" style="object-fit: cover; height: 200px;">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ p.name }}</h5>
-                <p class="card-text">
-                    チーム：{{ p.team }}<br>
-                    背番号：{{ p.number }}<br>
-                    性別：{{ p.gender }}<br>
-                    出身校：{{ p.school }}<br>
-                    学年：{{ p.grade }}年生
-                    ステータス：{{ p.status }}<br>
-                    備考：{{ p.notes }}
-                </p>
-                <a href="{{ url_for('edit_profile', id=p.id) }}" class="btn btn-sm btn-warning">編集</a>
-                <a href="{{ url_for('delete_profile', id=p.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('削除しますか？')">削除</a>
-            </div>
-        </div>
+  {% for p in profiles %}
+  <div class="col-md-4">
+    <div class="card mb-4">
+      {% if p.image_filename %}
+        {% if 'res.cloudinary.com' in p.image_filename %}
+          <!-- Cloudinary画像 -->
+          <img src="{{ p.image_filename }}" class="card-img-top" style="object-fit: cover; height: 200px;">
+        {% else %}
+          <!-- ローカル画像 -->
+          <img src="{{ url_for('static', filename='uploads/' + p.image_filename) }}" class="card-img-top" style="object-fit: cover; height: 200px;">
+        {% endif %}
+      {% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ p.name }}</h5>
+        <p class="card-text">
+          チーム：{{ p.team }}<br>
+          背番号：{{ p.number }}<br>
+          性別：{{ p.gender }}<br>
+          出身校：{{ p.school }}<br>
+          学年：{{ p.grade }}年生<br>
+          ステータス：{{ p.status }}<br>
+          備考：{{ p.notes }}
+        </p>
+        <a href="{{ url_for('edit_profile', id=p.id) }}" class="btn btn-sm btn-warning">編集</a>
+        <a href="{{ url_for('delete_profile', id=p.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('削除しますか？')">削除</a>
+      </div>
     </div>
-    {% endfor %}
+  </div>
+  {% endfor %}
 </div>
 
 {% endblock %}
+
