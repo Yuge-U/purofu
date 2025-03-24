@@ -12,7 +12,9 @@ from flask import render_template_string, make_response
 from urllib.parse import quote
 import os
 
+from flask import Flask
 app = Flask(__name__)
+
 app.secret_key = "your_secret_key_here"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///messages.db'
@@ -598,5 +600,3 @@ def delete_profile(id):
     db.session.delete(profile)
     db.session.commit()
     return redirect(url_for("profile"))
-
-app = Flask(__name__)
