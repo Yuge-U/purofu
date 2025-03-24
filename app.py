@@ -183,9 +183,15 @@ def profile():
 def profile_new():
     if request.method == "POST":
         name = request.form["name"]
+
         grade = request.form.get("grade")
+        grade = int(grade) if grade and grade.isdigit() else None
+
         gender = request.form.get("gender")
+
         number = request.form.get("number")
+        number = int(number) if number and number.isdigit() else None
+
         status = request.form.get("status")
         notes = request.form.get("notes")
 
@@ -225,15 +231,21 @@ def profile_new():
 
 
 
+
 @app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit_profile(id):
     profile = Profile.query.get_or_404(id)
 
     if request.method == "POST":
         profile.name = request.form["name"]
-        profile.grade = request.form.get("grade")
+        grade = request.form.get("grade")
+        profile.grade = int(grade) if grade and grade.isdigit() else None
+
         profile.gender = request.form.get("gender")
-        profile.number = request.form.get("number")
+
+        number = request.form.get("number")
+        profile.number = int(number) if number and number.isdigit() else None
+
         profile.status = request.form.get("status")
         profile.notes = request.form.get("notes")
 
@@ -248,11 +260,15 @@ def edit_profile(id):
             profile.image_filename = result["secure_url"]
 
         db.session.commit()
-        return redirect(url_for("profile"))
 
+        # 🔁 元のページに戻る
+        return redirect(request.referrer or url_for("profile"))  ← ここを変更！
+
+    # GET時は従来通り
     teams = sorted([t[0] for t in db.session.query(Profile.team).distinct().all() if t[0]])
     schools = sorted([s[0] for s in db.session.query(Profile.school).distinct().all() if s[0]])
     return render_template("edit.html", profile=profile, teams=teams, schools=schools)
+
 
 
 
@@ -540,9 +556,9 @@ def import_profile_csv():
         for row in reader:
             profile = Profile(
                 name=row.get("名前", ""),
-                grade=row.get("学年"),
+                grade=int(row.get("学年")) if row.get("学年") and row.get("学年").isdigit() else None,
                 gender=row.get("性別"),
-                number=row.get("背番号"),
+                number=int(row.get("背番号")) if row.get("背番号") and row.get("背番号").isdigit() else None,
                 school=row.get("出身校"),
                 team=row.get("チーム名"),
                 status=row.get("ステータス", "在籍"),
@@ -558,8 +574,6 @@ def import_profile_csv():
 
     return render_template("import_csv.html")
 
-from io import StringIO
-import csv
 
 @app.route("/download_sample_csv")
 def download_sample_csv():
