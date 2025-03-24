@@ -600,8 +600,3 @@ def delete_profile(id):
     return redirect(url_for("profile"))
 
 app = Flask(__name__)
-
-from app import app  # app.py に Flask(app) がある前提
-
-if __name__ == "__main__":
-    app.run()
