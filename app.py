@@ -261,10 +261,11 @@ def edit_profile(id):
 
         db.session.commit()
 
-        # 🔁 元のページに戻る
-        return redirect(request.referrer or url_for("profile"))  
+        # 🔁 フォームから戻り先を取得
+        return_url = request.form.get("return_url")
+        return redirect(return_url or url_for("profile"))  # fallbackあり
 
-    # GET時は従来通り
+    # GETのとき（従来通り）
     teams = sorted([t[0] for t in db.session.query(Profile.team).distinct().all() if t[0]])
     schools = sorted([s[0] for s in db.session.query(Profile.school).distinct().all() if s[0]])
     return render_template("edit.html", profile=profile, teams=teams, schools=schools)
