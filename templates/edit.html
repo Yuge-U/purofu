@@ -5,6 +5,7 @@
 <h2 class="mb-4">プロフィール編集</h2>
 
 <form method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="return_url" value="{{ request.referrer }}">
 
   <!-- 🔸 チーム名 -->
   <div class="row mb-3">
