@@ -54,6 +54,7 @@ class Attendance(db.Model):
     event = db.Column(db.String(100))
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
     status = db.Column(db.String(10))
+    memo = db.Column(db.Text)
     profile = db.relationship("Profile", backref="attendances")
 
     def __repr__(self):
