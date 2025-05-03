@@ -132,10 +132,7 @@
               <option value="遅刻" {% if record.status == "遅刻" %}selected{% endif %}>遅刻</option>
               <option value="早退" {% if record.status == "早退" %}selected{% endif %}>早退</option>
             </select>
-          </td>
-          <td>
-            <input type="text" name="memo_{{ record.profile.id }}" value="{{ record.memo or '' }}" placeholder="メモ" style="width: 100%;">
-        　</td>
+        </td>
         </tr>
       {% endfor %}
     </tbody>
