@@ -7,6 +7,7 @@ from urllib.parse import quote
 import csv
 from io import StringIO
 import os
+from weasyprint import HTML
 
 import cloudinary
 import cloudinary.uploader
