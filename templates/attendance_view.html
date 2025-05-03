@@ -25,6 +25,12 @@
   </a>
 {% endif %}
 
+<form action="{{ url_for('delete_attendance_event') }}" method="POST" onsubmit="return confirm('本当に削除しますか？')">
+  <input type="hidden" name="date" value="{{ selected_date }}">
+  <input type="hidden" name="event" value="{{ selected_event }}">
+  <button type="submit" class="btn btn-danger">このイベントを削除</button>
+</form>
+
 <!-- フィルターフォーム -->
 <form method="GET" class="mb-4" id="filterForm">
   <div class="row g-2 align-items-end">
@@ -138,9 +144,3 @@
 {% endif %}
 
 {% endblock %}
-
-<form action="{{ url_for('delete_attendance_event') }}" method="POST" onsubmit="return confirm('本当に削除しますか？')">
-  <input type="hidden" name="date" value="{{ selected_date }}">
-  <input type="hidden" name="event" value="{{ selected_event }}">
-  <button type="submit" class="btn btn-danger">このイベントを削除</button>
-</form>
