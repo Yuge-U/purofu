@@ -46,13 +46,13 @@
         <tbody>
             {% for profile, attendance in records %}
             <tr>
-                <td>{{ profile.team }}</td>
                 <td>{{ profile.name }}</td>
                 <td>{{ profile.grade }}</td>
                 <td>{{ profile.gender }}</td>
                 <td>{{ profile.school }}</td>
-                <td>{{ attendance.status or "未入力" }}</td>
-                <td>{{ attendance.memo or "" }}</td>
+                <td>{{ profile.team }}</td>
+                <td>{{ attendance.status }}</td>
+                <td>{{ attendance.memo or "" }}</td> 
             </tr>
             {% endfor %}
         </tbody>
