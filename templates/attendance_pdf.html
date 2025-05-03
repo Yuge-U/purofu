@@ -40,7 +40,6 @@
                 <th>性別</th>
                 <th>出身校</th>
                 <th>出欠</th>
-                <th>メモ</th>
             </tr>
         </thead>
         <tbody>
@@ -52,7 +51,6 @@
                 <td>{{ profile.gender }}</td>
                 <td>{{ profile.school }}</td>
                 <td>{{ attendance.status }}</td>
-                <td>{{ attendance.memo or "" }}</td>
             </tr>
             {% endfor %}
         </tbody>        
