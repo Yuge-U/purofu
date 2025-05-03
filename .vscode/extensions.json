@@ -1,5 +1,7 @@
 {
     "recommendations": [
-        "alexcvzz.vscode-sqlite"
+        "alexcvzz.vscode-sqlite",
+        "ms-azuretools.vscode-docker",
+        "ms-python.python"  // Python 拡張機能
     ]
 }

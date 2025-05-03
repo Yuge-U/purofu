@@ -1,29 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, Response, render_template_string, make_response
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from flask_migrate import Migrate
 from datetime import datetime
+from urllib.parse import quote
 import csv
 from io import StringIO
-from flask import Response
-from flask import render_template, make_response
-from weasyprint import HTML
-from flask import render_template_string, make_response
-from urllib.parse import quote
 import os
 
 import cloudinary
 import cloudinary.uploader
 
-# Cloudinary設定
+# Flask アプリ初期化
+app = Flask(__name__)
+app.secret_key = "your_secret_key_here"
+
+# DB 設定
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///messages.db")
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+# Cloudinary 設定
 cloudinary.config(
     cloud_name="purofu",
     api_key="321378518641743",
     api_secret="wbr-PE9sGDB_KLurSKM3N9TafVQ"
 )
-
-from flask import Flask
-app = Flask(__name__)
 
 app.secret_key = "your_secret_key_here"
 
@@ -636,3 +639,8 @@ def delete_profile(id):
     db.session.delete(profile)
     db.session.commit()
     return redirect(url_for("profile"))
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
