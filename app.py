@@ -55,6 +55,7 @@ class Attendance(db.Model):
     event = db.Column(db.String(100))
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
     status = db.Column(db.String(10))
+    memo = db.Column(db.Text) 
     profile = db.relationship("Profile", backref="attendances")
 
     def __repr__(self):
@@ -497,9 +498,9 @@ def export_attendance_csv():
     si = StringIO()
     si.write('\ufeff')  # UTF-8 BOM
     writer = csv.writer(si)
-    writer.writerow(["チーム","名前", "学年", "性別", "チーム", "出身校", "出席ステータス"])
+    writer.writerow(["チーム","名前", "学年", "性別", "チーム", "出身校", "出席ステータス","メモ"])
     for profile, attendance in records:
-        writer.writerow([profile.team,profile.name, profile.grade, profile.gender, profile.team, profile.school, attendance.status])
+        writer.writerow([profile.team,profile.name, profile.grade, profile.gender, profile.team, profile.school, attendance.status,attendance.memo or ""])
 
     filename = f"attendance_{date}_{event}.csv"
     encoded_filename = quote(filename)
@@ -647,17 +648,6 @@ def delete_attendance_event():
     flash(f"{date} のイベント「{event}」を削除しました", "success")
     return redirect(url_for("view_attendance"))
 #イベント削除
-
-#イベントにコメント記入追加
-class Attendance(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.String(20))
-    event = db.Column(db.String(100))
-    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
-    status = db.Column(db.String(10))
-    memo = db.Column(db.Text)  # ← 追加する部分！
-    profile = db.relationship("Profile", backref="attendances")
-#イベントにコメント記入追加
 
 @app.route("/delete/<int:id>")
 def delete_profile(id):
