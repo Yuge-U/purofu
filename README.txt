@@ -12,7 +12,7 @@
 
 4.アップデート用そのあと手動デプロイ
 　　git add .
-　　git commit -m "写真表示修正"
+　　git commit -m "修正"
 　　git push
 
 5.画像保存策

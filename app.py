@@ -18,8 +18,11 @@ app.secret_key = "your_secret_key_here"
 # DB 設定
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///messages.db")
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+
+db = SQLAlchemy()
+migrate = Migrate()
+db.init_app(app)
+migrate.init_app(app, db)
 
 # Cloudinary 設定
 cloudinary.config(
@@ -27,13 +30,6 @@ cloudinary.config(
     api_key="321378518641743",
     api_secret="wbr-PE9sGDB_KLurSKM3N9TafVQ"
 )
-
-app.secret_key = "your_secret_key_here"
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///messages.db")
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
