@@ -25,3 +25,8 @@ cloudinary.config(
     api_key="321378518641743",
     api_secret="wbr-PE9sGDB_KLurSKM3N9TafVQ"
 )
+
+#自動デプロイ
+git add render.yaml
+git commit -m "add render.yaml for migration"
+git push
