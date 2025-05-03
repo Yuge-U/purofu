@@ -100,7 +100,7 @@ def delete_message(id):
 def profile_login():
     if request.method == "POST":
         password = request.form.get("password")
-        if password == "1234":
+        if password == "mob":
             session["authenticated"] = True
             return redirect(url_for("profile"))
         else:
