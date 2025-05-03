@@ -20,10 +20,8 @@ app.secret_key = "your_secret_key_here"
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///messages.db")
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
-db = SQLAlchemy()
-migrate = Migrate()
-db.init_app(app)
-migrate.init_app(app, db)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # Cloudinary 設定
 cloudinary.config(
@@ -56,7 +54,7 @@ class Attendance(db.Model):
     event = db.Column(db.String(100))
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
     status = db.Column(db.String(10))
-    memo = db.Column(db.Text) 
+    memo = db.Column(db.Text)  
     profile = db.relationship("Profile", backref="attendances")
 
     def __repr__(self):
