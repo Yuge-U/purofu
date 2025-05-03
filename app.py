@@ -627,7 +627,22 @@ def export_profile_csv():
             "Content-Disposition": f"attachment; filename*=UTF-8''{filename}"
         }
     )
+#イベント削除
+@app.route("/attendance/delete_event", methods=["POST"])
+def delete_attendance_event():
+    date = request.form.get("date")
+    event = request.form.get("event")
 
+    if not date or not event:
+        flash("日付とイベント名が必要です", "danger")
+        return redirect(url_for("view_attendance"))
+
+    Attendance.query.filter_by(date=date, event=event).delete()
+    db.session.commit()
+
+    flash(f"{date} のイベント「{event}」を削除しました", "success")
+    return redirect(url_for("view_attendance"))
+#イベント削除
 
 @app.route("/delete/<int:id>")
 def delete_profile(id):

@@ -15,6 +15,14 @@
   {% endif %}
 {% endwith %}
 
+//* イベント削除ボタン（選択された日付とイベント名がある場合のみ表示） --
+<form action="{{ url_for('delete_attendance_event') }}" method="POST" onsubmit="return confirm('本当に削除しますか？')">
+  <input type="hidden" name="date" value="{{ selected_date }}">
+  <input type="hidden" name="event" value="{{ selected_event }}">
+  <button type="submit" class="btn btn-danger">このイベントを削除</button>
+</form>
+
+
 <!-- 出力ボタン -->
 {% if selected_date and selected_event %}
   <a href="{{ url_for('export_attendance_csv', date=selected_date, event=selected_event, team=request.args.getlist('team')) }}" class="btn btn-success mb-3">

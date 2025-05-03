@@ -12,7 +12,7 @@
 
 4.アップデート用そのあと手動デプロイ
 　　git add .
-　　git commit -m "追加"
+　　git commit -m "イベント削除機能"
 　　git push
 
 5.画像保存策
