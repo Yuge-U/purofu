@@ -374,7 +374,10 @@ def view_attendance():
                 if not attendance:
                     attendance = Attendance(date=selected_date, event=selected_event, profile_id=profile_id)
                 attendance.status = value
-                db.session.add(attendance)
+                 # 🔽 メモも更新
+            memo_value = request.form.get(f"memo_{profile_id}")
+            attendance.memo = memo_value
+        db.session.add(attendance)
         db.session.commit()
         flash("出欠情報を保存しました")
         return redirect(url_for("view_attendance", date=selected_date, event=selected_event))
@@ -627,6 +630,7 @@ def export_profile_csv():
             "Content-Disposition": f"attachment; filename*=UTF-8''{filename}"
         }
     )
+
 #イベント削除
 @app.route("/attendance/delete_event", methods=["POST"])
 def delete_attendance_event():
@@ -643,6 +647,17 @@ def delete_attendance_event():
     flash(f"{date} のイベント「{event}」を削除しました", "success")
     return redirect(url_for("view_attendance"))
 #イベント削除
+
+#イベントにコメント記入追加
+class Attendance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(20))
+    event = db.Column(db.String(100))
+    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
+    status = db.Column(db.String(10))
+    memo = db.Column(db.Text)  # ← 追加する部分！
+    profile = db.relationship("Profile", backref="attendances")
+#イベントにコメント記入追加
 
 @app.route("/delete/<int:id>")
 def delete_profile(id):
